@@ -1,0 +1,45 @@
+{
+  "name": "figcraft-mcp",
+  "version": "0.1.0",
+  "description": "Model Context Protocol (MCP) server for FigCraft interface design and prototyping tool",
+  "main": "dist/index.js",
+  "type": "module",
+  "bin": {
+    "figcraft-mcp": "./dist/index.js"
+  },
+  "scripts": {
+    "build": "tsc",
+    "prepare": "npm run build",
+    "start": "node dist/index.js",
+    "dev": "tsc -w",
+    "prepublishOnly": "npm run build"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/stuck-w-yu/figcraft-mcp.git"
+  },
+  "keywords": [
+    "mcp",
+    "model-context-protocol",
+    "figcraft",
+    "figma",
+    "design",
+    "agent",
+    "llm"
+  ],
+  "author": "Wahyu Firmansyah <xwoner38@gmail.com>",
+  "license": "MIT",
+  "dependencies": {
+    "@modelcontextprotocol/sdk": "^1.32.2",
+    "zod": "^4.6.7"
+  },
+  "devDependencies": {
+    "@types/node": "^26.6.6",
+    "typescript": "^7.0.2"
+  },
+  "files": [
+    "dist",
+    "README.md",
+    "LICENSE"
+  ]
+}

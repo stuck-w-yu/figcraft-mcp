@@ -85,6 +85,10 @@ export class FigcraftBackend {
       process.stderr.write(`[figcraft-backend] ${msg}`);
     });
 
+    this.child.stdin.on('error', (err: Error) => {
+      this.log(`Backend stdin error: ${err.message}`);
+    });
+
     this.child.on('error', (err: Error) => {
       this.log(`Backend process error: ${err.message}`);
       this.cleanupPending(err);
@@ -105,6 +109,17 @@ export class FigcraftBackend {
         version: '0.1.0',
       },
     });
+    this.notify('notifications/initialized');
+  }
+
+  public notify(method: string, params: Record<string, any> = {}): void {
+    if (!this.child || !this.child.stdin.writable) return;
+    const payload = JSON.stringify({
+      jsonrpc: '2.0',
+      method,
+      params,
+    }) + '\n';
+    this.child.stdin.write(payload);
   }
 
   public request<T = any>(method: string, params: Record<string, any> = {}): Promise<T> {

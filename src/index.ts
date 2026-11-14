@@ -20,11 +20,14 @@ import type { FigcraftMcpOptions, BackendStatus } from './types.js';
 const VERSION = '0.1.0';
 
 function parseArgs(args: string[]): FigcraftMcpOptions {
+  const envPort = parseInt(process.env.FIGCRAFT_PORT || '', 10);
+  const envTimeout = parseInt(process.env.FIGCRAFT_TIMEOUT || '', 10);
+
   const options: FigcraftMcpOptions = {
-    port: parseInt(process.env.FIGCRAFT_PORT || '7979', 10),
+    port: !isNaN(envPort) && envPort > 0 && envPort < 65536 ? envPort : 7979,
     headless: false,
     attachOnly: false,
-    timeout: parseInt(process.env.FIGCRAFT_TIMEOUT || '300', 10),
+    timeout: !isNaN(envTimeout) && envTimeout > 0 ? envTimeout : 300,
     rootPath: process.env.FIGCRAFT_ROOT || path.join(os.homedir(), 'dev/design'),
     cliPath: process.env.FIGCRAFT_CLI,
     verbose: false,

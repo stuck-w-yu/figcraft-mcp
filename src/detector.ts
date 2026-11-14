@@ -33,13 +33,16 @@ export function isPortOpen(port: number, host = '127.0.0.1', timeoutMs = 400): P
 }
 
 export function findCliBinary(customPath?: string): string | null {
-  if (customPath && fs.existsSync(customPath)) {
-    try {
-      fs.accessSync(customPath, fs.constants.X_OK);
-      return customPath;
-    } catch {
-      // not executable
+  if (customPath) {
+    if (fs.existsSync(customPath)) {
+      try {
+        fs.accessSync(customPath, fs.constants.X_OK);
+        return customPath;
+      } catch {
+        return null;
+      }
     }
+    return null;
   }
 
   const envCli = process.env.FIGCRAFT_CLI;

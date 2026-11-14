@@ -51,11 +51,26 @@ function parseArgs(args: string[]): FigcraftMcpOptions {
     } else if (arg === '--attach') {
       options.attachOnly = true;
     } else if (arg === '--timeout') {
-      options.timeout = parseInt(args[++i], 10);
+      const val = parseInt(args[++i], 10);
+      if (isNaN(val) || val <= 0) {
+        process.stderr.write(`Invalid timeout: ${args[i]}\n`);
+        process.exit(1);
+      }
+      options.timeout = val;
     } else if (arg === '--root') {
-      options.rootPath = args[++i];
+      const val = args[++i];
+      if (!val) {
+        process.stderr.write(`Missing value for --root\n`);
+        process.exit(1);
+      }
+      options.rootPath = val;
     } else if (arg === '--cli') {
-      options.cliPath = args[++i];
+      const val = args[++i];
+      if (!val) {
+        process.stderr.write(`Missing value for --cli\n`);
+        process.exit(1);
+      }
+      options.cliPath = val;
     } else if (arg === '--verbose' || arg === '-v') {
       options.verbose = true;
     }
@@ -114,12 +129,14 @@ async function main(): Promise<void> {
 
   const backend = new FigcraftBackend(backendStatus, options);
 
+  // ponytail: Simple signal/stdin hook. Add parent PID polling if client dies abruptly without EOF.
   const cleanup = () => {
     backend.close();
     process.exit(0);
   };
   process.on('SIGINT', cleanup);
   process.on('SIGTERM', cleanup);
+  process.stdin.on('close', cleanup);
 
   try {
     await backend.start();

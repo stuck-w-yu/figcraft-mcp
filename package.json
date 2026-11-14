@@ -9,7 +9,7 @@
   },
   "scripts": {
     "build": "tsc",
-    "test": "npm run build && node --test test/*.test.ts",
+    "test": "npm run build && node --experimental-strip-types --test test/*.test.ts",
     "prepare": "npm run build",
     "start": "node dist/index.js",
     "dev": "tsc -w",
@@ -35,7 +35,7 @@
   },
   "devDependencies": {
     "@types/node": "^26.6.6",
-    "typescript": "^7.0.2"
+    "typescript": "7.0.2"
   },
   "files": [
     "dist",

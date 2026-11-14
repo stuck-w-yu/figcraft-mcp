@@ -35,12 +35,13 @@ export class FigcraftBackend {
 
     const args = ['mcp'];
 
+    // rootPath dikirim di kedua mode agar confinement workspace selalu aktif
+    if (this.options.rootPath) {
+      args.push('--automation-write-root', this.options.rootPath);
+    }
+
     if (this.status.mode === 'attached') {
       args.push('--attach', String(this.status.port));
-    } else {
-      if (this.options.rootPath) {
-        args.push('--automation-write-root', this.options.rootPath);
-      }
     }
 
     if (this.options.timeout) {
@@ -102,7 +103,7 @@ export class FigcraftBackend {
 
     // Initialize backend handshake
     await this.request('initialize', {
-      protocolVersion: '2024-11-05',
+      protocolVersion: '2025-06-18',
       capabilities: {},
       clientInfo: {
         name: 'figcraft-mcp-ts',

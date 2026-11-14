@@ -19,6 +19,10 @@ import type { FigcraftMcpOptions, BackendStatus } from './types.js';
 
 const VERSION = '0.1.0';
 
+function log(msg: string): void {
+  process.stderr.write(`[figcraft-mcp] ${msg}\n`);
+}
+
 function parseArgs(args: string[]): FigcraftMcpOptions {
   const envPort = parseInt(process.env.FIGCRAFT_PORT || '', 10);
   const envTimeout = parseInt(process.env.FIGCRAFT_TIMEOUT || '', 10);
@@ -62,8 +66,8 @@ function parseArgs(args: string[]): FigcraftMcpOptions {
       options.timeout = val;
     } else if (arg === '--root') {
       const val = args[++i];
-      if (!val) {
-        process.stderr.write(`Missing value for --root\n`);
+      if (!val || !path.isAbsolute(val)) {
+        process.stderr.write(`--root must be an absolute path\n`);
         process.exit(1);
       }
       options.rootPath = val;
@@ -125,10 +129,8 @@ async function main(): Promise<void> {
     process.exit(1);
   }
 
-  process.stderr.write(
-    `[figcraft-mcp] Starting server in '${backendStatus.mode}' mode ` +
-    `(cli: ${backendStatus.cliPath}, port: ${backendStatus.port})\n`
-  );
+  log(`Starting server in '${backendStatus.mode}' mode ` +
+      `(cli: ${backendStatus.cliPath}, port: ${backendStatus.port})`);
 
   const backend = new FigcraftBackend(backendStatus, options);
 
@@ -229,7 +231,7 @@ async function main(): Promise<void> {
 
   const transport = new StdioServerTransport();
   await server.connect(transport);
-  process.stderr.write(`[figcraft-mcp] Ready on stdio\n`);
+  log('Ready on stdio');
 }
 
 main().catch((err) => {
